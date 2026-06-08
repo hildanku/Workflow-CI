@@ -11,7 +11,7 @@ import os
 def main():
     mlflow.set_experiment("diabetes_ci_pipeline")
 
-    data_path = Path(__file__).parent / "diabetes_preprocessing" / "train.csv"
+    data_path = Path(__file__).parent.parent / "diabetes_preprocessing" / "train.csv"
     df = pd.read_csv(data_path)
 
     X = df.drop(columns=["Outcome"])
@@ -42,7 +42,9 @@ def main():
         joblib.dump(model, model_path)
         mlflow.log_artifact(model_path)
 
-        print(f"Model训练完成. Run ID: {run.info.run_id}")
+        with open("mlflow_run_id.txt", "w") as f:
+            f.write(run.info.run_id)
+        print(f"Run ID saved: {run.info.run_id}")
 
 if __name__ == "__main__":
     main()
