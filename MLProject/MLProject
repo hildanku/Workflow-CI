@@ -1,0 +1,9 @@
+name: Diabetes-CI-Pipeline
+
+conda_env: conda.yaml
+
+entry_points:
+  main:
+    parameters:
+      data_path: {type: str, default: "diabetes_preprocessing/train.csv"}
+    command: "python modelling.py"
