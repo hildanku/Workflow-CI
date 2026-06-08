@@ -9,8 +9,6 @@ from pathlib import Path
 import os
 
 def main():
-    mlflow.set_experiment("diabetes_ci_pipeline")
-
     data_path = Path(__file__).parent.parent / "diabetes_preprocessing" / "train.csv"
     df = pd.read_csv(data_path)
 
@@ -20,8 +18,6 @@ def main():
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
     mlflow.sklearn.autolog()
-
-    run = mlflow.active_run()
 
     model = RandomForestClassifier(n_estimators=200, max_depth=15, random_state=42)
     model.fit(X_train, y_train)
@@ -43,9 +39,10 @@ def main():
     joblib.dump(model, model_path)
     mlflow.log_artifact(model_path)
 
+    run_id = os.environ["MLFLOW_RUN_ID"]
     with open("mlflow_run_id.txt", "w") as f:
-        f.write(run.info.run_id)
-    print(f"Run ID saved: {run.info.run_id}")
+        f.write(run_id)
+    print(f"Run ID saved: {run_id}")
 
 if __name__ == "__main__":
     main()
