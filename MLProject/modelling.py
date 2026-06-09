@@ -33,6 +33,7 @@ def main():
         recall = recall_score(y_test, y_pred)
         f1 = f1_score(y_test, y_pred)
 
+        # benign comment
         print(f"Akurasi: {accuracy:.4f}")
         print(f"Precision: {precision:.4f}")
         print(f"Recall: {recall:.4f}")
