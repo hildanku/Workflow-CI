@@ -9,6 +9,8 @@ from pathlib import Path
 import os
 
 def main():
+    mlflow.set_tracking_uri("file:" + str(Path(__file__).parent / "mlruns"))
+
     data_path = Path(__file__).parent.parent / "diabetes_preprocessing" / "train.csv"
     df = pd.read_csv(data_path)
 

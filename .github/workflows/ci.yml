@@ -29,7 +29,9 @@ jobs:
         pip install mlflow==2.19.0 scikit-learn pandas joblib
 
     - name: Train model with MLflow
-      run: mlflow run MLProject --env-manager=local --experiment-name diabetes_ci_pipeline
+      run: |
+        export MLFLOW_TRACKING_URI="file:$(pwd)/MLProject/mlruns"
+        mlflow run MLProject --env-manager=local --experiment-name diabetes_ci_pipeline
 
     - name: Upload model artifact
       uses: actions/upload-artifact@v4
