@@ -50,11 +50,18 @@ jobs:
 
     - name: Build Docker image
       run: |
+        RUN_ID=$(cat MLProject/mlflow_run_id.txt)
+        export MLFLOW_TRACKING_URI="file:$(pwd)/MLProject/mlruns"
         pip install mlflow==2.19.0
-        mlflow models build-docker \
-          --model-uri "runs:/$(cat MLProject/mlflow_run_id.txt)/model" \
-          --name "hildanku/diabetes-model:latest" \
-          --env-manager conda
+        mlflow artifacts download --run-id "$RUN_ID" --artifact-path "model" --dst-path ./docker-model
+        cat > Dockerfile << 'DEOF'
+        FROM python:3.12-slim
+        RUN pip install mlflow==2.19.0 scikit-learn pandas joblib
+        COPY docker-model /opt/ml/model
+        ENV MLFLOW_DISABLE_ENV_CREATION=True
+        ENTRYPOINT ["mlflow", "models", "serve", "-m", "/opt/ml/model", "-p", "8080", "--host", "0.0.0.0"]
+        DEOF
+        docker build -t hildanku/diabetes-model:latest .
 
     - name: Push Docker image to Docker Hub
       env:
