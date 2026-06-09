@@ -22,6 +22,9 @@ def main():
     model = RandomForestClassifier(n_estimators=200, max_depth=15, random_state=42)
     model.fit(X_train, y_train)
 
+    run = mlflow.active_run()
+    run_id = run.info.run_id
+
     y_pred = model.predict(X_test)
     accuracy = accuracy_score(y_test, y_pred)
     precision = precision_score(y_test, y_pred)
@@ -39,7 +42,6 @@ def main():
     joblib.dump(model, model_path)
     mlflow.log_artifact(model_path)
 
-    run_id = os.environ["MLFLOW_RUN_ID"]
     with open("mlflow_run_id.txt", "w") as f:
         f.write(run_id)
     print(f"Run ID saved: {run_id}")
