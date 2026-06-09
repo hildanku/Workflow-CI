@@ -53,7 +53,8 @@ jobs:
         pip install mlflow==2.19.0
         mlflow models build-docker \
           --model-uri "runs:/$(cat MLProject/mlflow_run_id.txt)/model" \
-          --name "hildanku/diabetes-model:latest"
+          --name "hildanku/diabetes-model:latest" \
+          --env-manager conda
 
     - name: Push Docker image to Docker Hub
       env:
