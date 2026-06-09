@@ -19,32 +19,32 @@ def main():
 
     mlflow.sklearn.autolog()
 
-    model = RandomForestClassifier(n_estimators=200, max_depth=15, random_state=42)
-    model.fit(X_train, y_train)
+    with mlflow.start_run() as run:
+        model = RandomForestClassifier(n_estimators=200, max_depth=15, random_state=42)
+        model.fit(X_train, y_train)
 
-    run = mlflow.active_run()
-    run_id = run.info.run_id
+        run_id = run.info.run_id
 
-    y_pred = model.predict(X_test)
-    accuracy = accuracy_score(y_test, y_pred)
-    precision = precision_score(y_test, y_pred)
-    recall = recall_score(y_test, y_pred)
-    f1 = f1_score(y_test, y_pred)
+        y_pred = model.predict(X_test)
+        accuracy = accuracy_score(y_test, y_pred)
+        precision = precision_score(y_test, y_pred)
+        recall = recall_score(y_test, y_pred)
+        f1 = f1_score(y_test, y_pred)
 
-    print(f"Akurasi: {accuracy:.4f}")
-    print(f"Precision: {precision:.4f}")
-    print(f"Recall: {recall:.4f}")
-    print(f"F1-Score: {f1:.4f}")
+        print(f"Akurasi: {accuracy:.4f}")
+        print(f"Precision: {precision:.4f}")
+        print(f"Recall: {recall:.4f}")
+        print(f"F1-Score: {f1:.4f}")
 
-    os.makedirs("model", exist_ok=True)
-    model_path = "model/model.pkl"
-    import joblib
-    joblib.dump(model, model_path)
-    mlflow.log_artifact(model_path)
+        os.makedirs("model", exist_ok=True)
+        model_path = "model/model.pkl"
+        import joblib
+        joblib.dump(model, model_path)
+        mlflow.log_artifact(model_path)
 
-    with open("mlflow_run_id.txt", "w") as f:
-        f.write(run_id)
-    print(f"Run ID saved: {run_id}")
+        with open("mlflow_run_id.txt", "w") as f:
+            f.write(run_id)
+        print(f"Run ID saved: {run_id}")
 
 if __name__ == "__main__":
     main()
